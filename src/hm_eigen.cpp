@@ -90,10 +90,10 @@ Eigen::Matrix<double, -1, 2> poly_2_eigen(const TPPLPoly& poly)
 Eigen::Matrix<double, -1, 2> sort_verts(const Eigen::Matrix<double, -1, 2>& m)
 {
     // convert to std::vector of Eigen::Vector2d
-    std::vector<std::pair<double, double>> verts(m.rows());
+    std::vector<std::pair<double, double>> verts;
     for (int i = 0; i < m.rows(); i++) 
     {
-        verts[i] = std::make_pair(m(i, 0), m(i, 1));
+        verts.push_back(std::make_pair(m(i, 0), m(i, 1)));
     }
 
     // get centroid
@@ -105,6 +105,7 @@ Eigen::Matrix<double, -1, 2> sort_verts(const Eigen::Matrix<double, -1, 2>& m)
         cy += vert.second;
     }
     cx /= verts.size();
+    cy /= verts.size();
 
     // sort the vertices
     std::sort(verts.begin(), verts.end(), [&](const std::pair<double, double>& a, const std::pair<double, double>& b) 
