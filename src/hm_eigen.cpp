@@ -96,10 +96,20 @@ Eigen::Matrix<double, -1, 2> sort_verts(const Eigen::Matrix<double, -1, 2>& m)
         verts[i] = std::make_pair(m(i, 0), m(i, 1));
     }
 
-    // sort the vertices
-    std::sort(verts.begin(), verts.end(), [](const std::pair<double, double>& a, const std::pair<double, double>& b) 
+    // get centroid
+    double cx = 0.0;
+    double cy = 0.0;
+    for (const auto& vert : verts) 
     {
-        return std::atan2(a.second, a.first) < std::atan2(b.second, b.first);
+        cx += vert.first;
+        cy += vert.second;
+    }
+    cx /= verts.size();
+
+    // sort the vertices
+    std::sort(verts.begin(), verts.end(), [&](const std::pair<double, double>& a, const std::pair<double, double>& b) 
+    {
+        return std::atan2(a.second-cy, a.first-cx) < std::atan2(b.second-cy, b.first-cx);
     });
 
     // convert back to Eigen::Matrix
