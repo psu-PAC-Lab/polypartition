@@ -30,7 +30,10 @@ include_directories(
 
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
-python_add_library(_core MODULE python/src/polypartition_py.cpp WITH_SOABI)
+python_add_library(_core MODULE python/src/polypartition_py.cpp 
+    src/polypartition.cpp
+    src/hm_eigen.cpp
+    WITH_SOABI)
 
 # link libraries
 target_link_libraries(_core PRIVATE pybind11::headers)
