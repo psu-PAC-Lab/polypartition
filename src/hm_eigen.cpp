@@ -60,12 +60,13 @@ std::vector<Eigen::Matrix<double, -1, 2>> hertel_mehlhorn(const Eigen::Matrix<do
 
 TPPLPoly make_poly(const Eigen::Matrix<double, -1, 2>& m, bool is_hole)
 {
+    Eigen::Matrix<double, -1, 2> m_srt = sort_verts(m);
     TPPLPoly poly;
     poly.Init(m.rows());
-    for (int i = 0; i < m.rows(); i++) 
+    for (int i = 0; i < m_srt.rows(); i++) 
     {
-        poly[i].x = m(i, 0);
-        poly[i].y = m(i, 1);
+        poly[i].x = m_srt(i, 0);
+        poly[i].y = m_srt(i, 1);
     }
     poly.SetHole(is_hole);
     if (is_hole)
@@ -84,4 +85,29 @@ Eigen::Matrix<double, -1, 2> poly_2_eigen(const TPPLPoly& poly)
         m(i, 1) = poly[i].y;
     }
     return m;
+}
+
+Eigen::Matrix<double, -1, 2> sort_verts(const Eigen::Matrix<double, -1, 2>& m)
+{
+    // convert to std::vector of Eigen::Vector2d
+    std::vector<std::pair<double, double>> verts(m.rows());
+    for (int i = 0; i < m.rows(); i++) 
+    {
+        verts[i] = std::make_pair(m(i, 0), m(i, 1));
+    }
+
+    // sort the vertices
+    std::sort(verts.begin(), verts.end(), [](const std::pair<double, double>& a, const std::pair<double, double>& b) 
+    {
+        return std::atan2(a.second, a.first) < std::atan2(b.second, b.first);
+    });
+
+    // convert back to Eigen::Matrix
+    Eigen::Matrix<double, -1, 2> m_srt (verts.size(), 2);
+    for (int i = 0; i < verts.size(); i++) 
+    {
+        m_srt(i, 0) = verts[i].first;
+        m_srt(i, 1) = verts[i].second;
+    }
+    return m_srt;
 }
