@@ -1,4 +1,4 @@
-This fork adds python bindings for the Hertel-Mehlhorn algorithm in the C++ polypartition library.
+## This fork adds python bindings for the Hertel-Mehlhorn algorithm in the C++ PolyPartition library.
 
 
 
