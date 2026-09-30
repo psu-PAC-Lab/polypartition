@@ -1,6 +1,6 @@
 #include "hm_eigen.hpp"
 
-std::vector<Eigen::Matrix<double, -1, 2>> hertel_mehlhorn(const Eigen::Matrix<double, -1, 2>& bdy, const std::vector<Eigen::Matrix<double, -1, 2>>& holes)
+std::vector<Eigen::Matrix<double, -1, 2>> hertel_mehlhorn(const Eigen::Matrix<double, -1, 2>& bdy, const std::vector<Eigen::Matrix<double, -1, 2>>& holes, bool sort_vertices)
 {
     // Check if the boundary polygon is valid
     if (bdy.rows() < 3) 
@@ -21,13 +21,13 @@ std::vector<Eigen::Matrix<double, -1, 2>> hertel_mehlhorn(const Eigen::Matrix<do
     TPPLPolyList polys;
 
     // boundary polygon
-    TPPLPoly bdy_poly = make_poly(bdy, false);
+    TPPLPoly bdy_poly = make_poly(bdy, false, sort_vertices);
     polys.push_back(bdy_poly);
 
     // holes
     for (const auto& hole : holes) 
     {
-        TPPLPoly hole_poly = make_poly(hole, true);
+        TPPLPoly hole_poly = make_poly(hole, true, sort_vertices);
         polys.push_back(hole_poly);
     }
 
@@ -58,9 +58,9 @@ std::vector<Eigen::Matrix<double, -1, 2>> hertel_mehlhorn(const Eigen::Matrix<do
 }
 
 
-TPPLPoly make_poly(const Eigen::Matrix<double, -1, 2>& m, bool is_hole)
+TPPLPoly make_poly(const Eigen::Matrix<double, -1, 2>& m, bool is_hole, bool sort_vertices)
 {
-    Eigen::Matrix<double, -1, 2> m_srt = sort_verts(m);
+    Eigen::Matrix<double, -1, 2> m_srt = sort_vertices ? sort_verts(m) : m;
     TPPLPoly poly;
     poly.Init(m.rows());
     for (int i = 0; i < m_srt.rows(); i++) 
